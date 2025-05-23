@@ -1,0 +1,58 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRoles {
+  user
+  admin
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  username String?
+  email    String    @unique
+  password String
+  role     UserRoles @default(user)
+
+  characters Character[]
+  channels   Channel[]
+
+  @@map(name: "user")
+}
+
+model Character {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  personality String
+  style       String
+  hobbies     String?
+  goals       String?
+  thoughts    String?
+
+  userId Int   @map("user_id")
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  channel Channel?
+
+  @@map(name: "character")
+}
+
+model Channel {
+  id     Int    @id @default(autoincrement())
+  chatId String @unique @map("chat_id")
+  title  String
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  characterId Int?       @unique @map("character_id")
+  character   Character? @relation(fields: [characterId], references: [id])
+
+  @@map(name: "channel")
+}

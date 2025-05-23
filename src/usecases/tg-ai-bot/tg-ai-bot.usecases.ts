@@ -1,6 +1,6 @@
 import { Action, Help, On, Start, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
-import { YandexGptUsecases } from './yandex-ai.usecases';
+import { YandexGptUsecases } from '../yandex/yandex-ai.usecases';
 
 @Update()
 export class TGAiBotUsecases {
